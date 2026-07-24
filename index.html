@@ -72,7 +72,6 @@
   }
   .brand-badge img { width: 32px; height: auto; border-radius: 6px; }
   .brand-text .t1 { font-weight: 700; font-size: 14px; color: var(--text); }
-  .brand-text .t2 { font-size: 11px; color: var(--text-dim); }
 
   .nav-group { margin-top: 18px; }
   .nav-group-label {
@@ -129,11 +128,133 @@
   }
   .btn-toggle-sidebar:hover { background: var(--bg-elev); }
 
+  .page-header { margin-bottom: 20px; }
+  .page-header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .btn-back-home {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-back-home:hover {
+    background: var(--bg-card);
+    color: var(--text);
+  }
+
   .page-title { font-size: 22px; font-weight: 700; margin: 0 0 4px 0; }
   .page-subtitle { font-size: 13px; color: var(--text-dim); margin: 0; }
 
   .view { display: none; }
   .view.active { display: block; }
+
+  /* ================= NOTIFICACIÓN TOAST UNIFICADA ================= */
+  .toast-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  .toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ================= MODAL DE CONFIRMACIÓN CENTRADO ================= */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+  }
+  .modal-overlay.active .modal-card {
+    transform: scale(1);
+  }
+  .modal-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .modal-msg {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .btn-modal {
+    padding: 7px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    color: var(--text-dim);
+    transition: background 0.12s, color 0.12s;
+  }
+  .btn-modal:hover {
+    background: var(--border);
+    color: var(--text);
+  }
+  .btn-modal-confirm {
+    background: #2e1616;
+    color: #f87171;
+    border-color: #452222;
+  }
+  .btn-modal-confirm:hover {
+    background: #452222;
+    color: #fff;
+  }
 
   /* ================= DASHBOARD (INICIO) ================= */
   .dashboard-grid {
@@ -218,7 +339,7 @@
     cursor: pointer; background: #fff; color: #0b0c0f; border: none; border-radius: 7px; float: right;
   }
   .btn-generar:hover { background: #d8d8d8; }
-  .btn-generar-wrap { overflow: hidden; padding-top: 6px; }
+  .btn-generar-wrap { overflow: hidden; padding-top: 6px; display: flex; justify-content: flex-end; gap: 10px; }
 
   .resultado-wrap { margin-top: 26px; clear: both; }
   textarea.resultado {
@@ -233,7 +354,6 @@
   .btn-copiar:hover { background: var(--bg-elev); }
   .btn-danger { color: #f87171; border-color: #452222; }
   .btn-danger:hover { background: #2e1616; }
-  .copiado { color: #5fd17d; font-size: 13px; margin-left: 10px; font-weight: 600; }
 
   /* ===== PLANTILLA UNIFICADA DE APB ===== */
   .apb-doc, .apb-doc * {
@@ -269,13 +389,27 @@
 <!-- OVERLAY PARA CERRAR LA SIDEBAR HACIENDO CLIC FUERA -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
+<!-- CONTENEDOR DE NOTIFICACIÓN TOAST GLOBAL -->
+<div id="toastNotification" class="toast-notification"></div>
+
+<!-- MODAL DE CONFIRMACIÓN CENTRADO DE LA PÁGINA -->
+<div id="customModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-title" id="modalTitle">Confirmación</div>
+    <div class="modal-msg" id="modalMsg">¿Estás seguro de que deseas realizar esta acción?</div>
+    <div class="modal-actions">
+      <button class="btn-modal" onclick="cerrarModalConfirmacion(false)">Cancelar</button>
+      <button class="btn-modal btn-modal-confirm" id="modalConfirmBtn" onclick="cerrarModalConfirmacion(true)">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= SIDEBAR RETRÁCTIL ================= -->
 <div class="sidebar" id="sidebar">
   <div class="brand">
     <div class="brand-badge"><img src="https://i.imgur.com/FxAqFuK.png" alt="LSSD Logo"></div>
     <div class="brand-text">
-      <div class="t1">Los Santos Sheriff</div>
-      <div class="t2">Generador de papeleo</div>
+      <div class="t1">Los Santos County Sheriff's Department</div>
     </div>
   </div>
 
@@ -289,7 +423,7 @@
   </div>
 
   <div class="nav-group">
-    <div class="nav-group-label">Use of Force</div>
+    <div class="nav-group-label">Uso de la Fuerza</div>
     <button class="nav-item" data-view="v-uof1" onclick="mostrarVista('v-uof1', this)">
        Informe Inicial
     </button>
@@ -301,7 +435,7 @@
   <div class="nav-group">
     <div class="nav-group-label">Generadores Varios</div>
     <button class="nav-item" data-view="v-apb" onclick="mostrarVista('v-apb', this)">
-       All Points Bulletin
+       Boletín de Búsqueda (APB)
     </button>
   </div>
 </div>
@@ -322,8 +456,8 @@
   <!-- ============ VISTA: INICIO (DASHBOARD) ============ -->
   <div class="view active" id="v-home">
     <div class="page-header">
-      <p class="page-title">Bienvenido al Generador de Papeleo</p>
-      <p class="page-subtitle">Selecciona una herramienta para comenzar a estructurar tus informes oficiales.</p>
+      <p class="page-title">Bienvenido al generador de papeleo de LSSD</p>
+      <p class="page-subtitle">Selecciona una herramienta para comenzar.</p>
     </div>
 
     <div class="dashboard-grid">
@@ -345,7 +479,7 @@
 
       <div class="dash-card" onclick="mostrarVista('v-apb')">
         <div>
-          <h3>All Points Bulletin (APB)</h3>
+          <h3>Boletín de Búsqueda (APB)</h3>
           <p>Generador visual en formato imagen para emitir boletines de sospechosos o vehículos.</p>
         </div>
         <div class="btn-acc">Abrir generador →</div>
@@ -364,8 +498,13 @@
   <!-- ============ VISTA: ARCHIVO LOCAL / HISTORIAL ============ -->
   <div class="view" id="v-history">
     <div class="page-header">
-      <p class="page-title">Archivo Local de Papeleos</p>
-      <p class="page-subtitle">Todos los papeleos que generas se guardan automáticamente en tu navegador.</p>
+      <div class="page-header-nav">
+        <div>
+          <p class="page-title">Archivo Local de Papeleos</p>
+          <p class="page-subtitle">Todos los papeleos que generas se guardan automáticamente en tu navegador.</p>
+        </div>
+        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+      </div>
     </div>
 
     <div id="history-container" class="history-list">
@@ -380,8 +519,13 @@
   <!-- ============ VISTA: INFORME INICIAL ============ -->
   <div class="view" id="v-uof1">
     <div class="page-header">
-      <p class="page-title">Informe Inicial — Uso Categórico de la Fuerza</p>
-      <p class="page-subtitle">Reporte del Incident Commander. Rellena los campos y genera el BBCode.</p>
+      <div class="page-header-nav">
+        <div>
+          <p class="page-title" data-generator-name="Informe Inicial — Uso Categórico de la Fuerza">Informe Inicial — Uso Categórico de la Fuerza</p>
+          <p class="page-subtitle">Reporte del Incident Commander. Rellena los campos y genera el BBCode.</p>
+        </div>
+        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+      </div>
     </div>
 
     <div class="section">
@@ -404,11 +548,11 @@
 
       <label>Tipo de UOF</label>
       <div class="checkboxes">
-        <label><input type="checkbox" class="cb1" value="DIS - Deputy-lnvolved Shooting"> DIS - Deputy-lnvolved Shooting</label>
-        <label><input type="checkbox" class="cb1" value="DIS-D - DIS Resulting in Death"> DIS-D - DIS Resulting in Death</label>
-        <label><input type="checkbox" class="cb1" value="ICD - In-Custody Death"> ICD - In-Custody Death</label>
-        <label><input type="checkbox" class="cb1" value="LERI - Law Enforcement Related Injury"> LERI - Law Enforcement Related Injury</label>
-        <label><input type="checkbox" class="cb1" value="AD - Accidental Discharge"> AD - Accidental Discharge</label>
+        <label><input type="checkbox" class="cb1" id="cb1-1" value="DIS - Deputy-lnvolved Shooting"> DIS - Disparo Involucrando a un Ayudante</label>
+        <label><input type="checkbox" class="cb1" id="cb1-2" value="DIS-D - DIS Resulting in Death"> DIS-D - Disparo Involucrando a un Ayudante con Resultado de Muerte</label>
+        <label><input type="checkbox" class="cb1" id="cb1-3" value="ICD - In-Custody Death"> ICD - Muerte Bajo Custodia</label>
+        <label><input type="checkbox" class="cb1" id="cb1-4" value="LERI - Law Enforcement Related Injury"> LERI - Lesión Relacionada con Aplicación de la Ley</label>
+        <label><input type="checkbox" class="cb1" id="cb1-5" value="AD - Accidental Discharge"> AD - Descarga Accidental</label>
       </div>
     </div>
 
@@ -439,22 +583,27 @@
     </div>
 
     <div class="btn-generar-wrap">
+      <button class="btn-copiar btn-danger" onclick="limpiarBorrador('v-uof1')" style="margin-top:24px;">Limpiar borrador</button>
       <button class="btn-generar" onclick="generar1()">Generar y Guardar</button>
     </div>
 
     <div class="resultado-wrap">
       <label>Resultado BBCode</label>
       <textarea class="resultado" id="resultado1" readonly onclick="this.select()"></textarea>
-      <button class="btn-copiar" onclick="copiar('resultado1', 'copiado1')">Copiar al portapapeles</button>
-      <span class="copiado" id="copiado1"></span>
+      <button class="btn-copiar" onclick="copiar('resultado1')">Copiar al portapapeles</button>
     </div>
   </div>
 
   <!-- ============ VISTA: INFORME COMPLEMENTARIO ============ -->
   <div class="view" id="v-uof2">
     <div class="page-header">
-      <p class="page-title">Informe Complementario — Ayudante Involucrado</p>
-      <p class="page-subtitle">Testimonio del ayudante involucrado directamente en el UOF.</p>
+      <div class="page-header-nav">
+        <div>
+          <p class="page-title" data-generator-name="Informe Complementario — Ayudante Involucrado">Informe Complementario — Ayudante Involucrado</p>
+          <p class="page-subtitle">Testimonio del ayudante involucrado directamente en el UOF.</p>
+        </div>
+        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+      </div>
     </div>
 
     <div class="section">
@@ -488,35 +637,40 @@
     <div class="section">
       <h2>3. Evidencia de video</h2>
       <hr class="section-hr">
-      <label>Body Worn Camera (BWC)</label>
+      <label>Cámara Corporal (BWC)</label>
       <div class="checkboxes">
-        <label><input type="checkbox" class="cb2" value="Activada — Grabación disponible"> Activada — Grabación disponible</label>
-        <label><input type="checkbox" class="cb2" value="Activada — Grabación parcial"> Activada — Grabación parcial</label>
-        <label><input type="checkbox" class="cb2" value="No activada"> No activada</label>
-        <label><input type="checkbox" class="cb2" value="No portaba BWC"> No portaba BWC</label>
-        <label><input type="checkbox" class="cb2" value="Mal funcionamiento técnico"> Mal funcionamiento técnico</label>
+        <label><input type="checkbox" class="cb2" id="cb2-1" value="Activada — Grabación disponible"> Activada — Grabación disponible</label>
+        <label><input type="checkbox" class="cb2" id="cb2-2" value="Activada — Grabación parcial"> Activada — Grabación parcial</label>
+        <label><input type="checkbox" class="cb2" id="cb2-3" value="No activada"> No activada</label>
+        <label><input type="checkbox" class="cb2" id="cb2-4" value="No portaba BWC"> No portaba BWC</label>
+        <label><input type="checkbox" class="cb2" id="cb2-5" value="Mal funcionamiento técnico"> Mal funcionamiento técnico</label>
       </div>
       <label>Material audiovisual</label>
       <textarea id="material-audiovisual"></textarea>
     </div>
 
     <div class="btn-generar-wrap">
+      <button class="btn-copiar btn-danger" onclick="limpiarBorrador('v-uof2')" style="margin-top:24px;">Limpiar borrador</button>
       <button class="btn-generar" onclick="generar2()">Generar y Guardar</button>
     </div>
 
     <div class="resultado-wrap">
       <label>Resultado BBCode</label>
       <textarea class="resultado" id="resultado2" readonly onclick="this.select()"></textarea>
-      <button class="btn-copiar" onclick="copiar('resultado2', 'copiado2')">Copiar al portapapeles</button>
-      <span class="copiado" id="copiado2"></span>
+      <button class="btn-copiar" onclick="copiar('resultado2')">Copiar al portapapeles</button>
     </div>
   </div>
 
   <!-- ============ VISTA: APB ============ -->
   <div class="view" id="v-apb">
     <div class="page-header">
-      <p class="page-title">All Points Bulletin (APB)</p>
-      <p class="page-subtitle">Generar un APB visual para localizar personas o vehículos de interés.</p>
+      <div class="page-header-nav">
+        <div>
+          <p class="page-title" data-generator-name="Boletín de Búsqueda (APB)">Boletín de Búsqueda (APB)</p>
+          <p class="page-subtitle">Generar un APB visual para localizar personas o vehículos de interés.</p>
+        </div>
+        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+      </div>
     </div>
 
     <div class="section">
@@ -532,30 +686,27 @@
             <option>Gang Enforcement Team</option>
             <option>Special Enforcement Bureau</option>
             <option>Davis Sheriff's Station Detective Bureau</option>
-            <option>Countywide Services Division</option>
-            <option>Traffic Detail</option>
           </select>
         </div>
         <div>
           <label>Tipo de APB</label>
           <select id="apb-tipo">
             <option value="">Seleccionar tipo</option>
-            <option>Person</option>
-            <option>Vehicle</option>
-            <option>Person & Vehicle</option>
-            <option>Informational</option>
-            <option>BOLO (Be On the LookOut)</option>
+            <option value="Person">Person</option>
+            <option value="Vehicle">Vehicle</option>
+            <option value="Person & Vehicle">Person & Vehicle</option>
+            <option value="Informative">Informative</option>
           </select>
         </div>
       </div>
       <div class="row2">
         <div>
-          <label>DR# (Número de reporte)</label>
+          <label>Nº de Reporte (DR# / CR#)</label>
           <input type="text" id="apb-dr" placeholder="Ej: CR#00083">
         </div>
         <div>
           <label>Fecha</label>
-          <input type="text" id="apb-fecha" placeholder="DD/MM/YYYY">
+          <input type="text" id="apb-fecha" placeholder="DD/MM/AAAA">
         </div>
       </div>
     </div>
@@ -574,12 +725,16 @@
             <option value="">Seleccionar rango</option>
             <option>Deputy Sheriff Trainee</option>
             <option>Deputy Sheriff</option>
-            <option>Bonus Deputy Sheriff</option>
+            <option>Deputy Sheriff (Bonus I)</option>
+            <option>Deputy Sheriff (Bonus II)</option>
             <option>Detective</option>
+            <option>Detective Sergeant</option>
             <option>Sergeant</option>
             <option>Lieutenant</option>
             <option>Captain</option>
             <option>Commander</option>
+            <option>Division Chief</option>
+            <option>Assistant Sheriff</option>
             <option>Undersheriff</option>
             <option>Sheriff</option>
           </select>
@@ -609,37 +764,37 @@
           <label>Sexo</label>
           <select id="apb-sosp-sexo">
             <option value="">-</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Unknown</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Desconocido">Desconocido</option>
           </select>
         </div>
         <div>
-          <label>Raza</label>
+          <label>Raza / Etnia</label>
           <select id="apb-sosp-raza">
             <option value="">-</option>
-            <option>White</option>
-            <option>Black / African American</option>
-            <option>Hispanic / Latino</option>
-            <option>Asian</option>
-            <option>Middle Eastern</option>
-            <option>Native American</option>
-            <option>Unknown</option>
+            <option value="Caucásica / Blanco">Caucásica / Blanco</option>
+            <option value="Afroamericana / Negro">Afroamericana / Negro</option>
+            <option value="Hispana / Latino">Hispana / Latino</option>
+            <option value="Asiática">Asiática</option>
+            <option value="Oriente Medio">Oriente Medio</option>
+            <option value="Nativa Americana">Nativa Americana</option>
+            <option value="Desconocida">Desconocida</option>
           </select>
         </div>
-        <div><label>Edad</label><input type="text" id="apb-sosp-edad"></div>
+        <div><label>Edad</label><input type="text" id="apb-sosp-edad" placeholder="Ej: 25-30 años"></div>
       </div>
       <div class="row3">
-        <div><label>Estatura</label><input type="text" id="apb-sosp-estatura"></div>
-        <div><label>Peso</label><input type="text" id="apb-sosp-peso"></div>
+        <div><label>Estatura</label><input type="text" id="apb-sosp-estatura" placeholder="Ej: 1.80m / 5'11"></div>
+        <div><label>Peso</label><input type="text" id="apb-sosp-peso" placeholder="Ej: 80 kg / 175 lbs"></div>
         <div>
           <label>Complexión</label>
           <select id="apb-sosp-complexion">
             <option value="">-</option>
-            <option>Thin / Slender</option>
-            <option>Medium / Athletic</option>
-            <option>Heavy / Large</option>
-            <option>Obese</option>
+            <option value="Delgada / Esbelta">Delgada / Esbelta</option>
+            <option value="Media / Atlética">Media / Atlética</option>
+            <option value="Robustez / Corpulenta">Robustez / Corpulenta</option>
+            <option value="Obesa">Obesa</option>
           </select>
         </div>
       </div>
@@ -648,37 +803,37 @@
           <label>Cabello</label>
           <select id="apb-sosp-cabello">
             <option value="">-</option>
-            <option>Black</option>
-            <option>Brown</option>
-            <option>Blonde</option>
-            <option>Red / Ginger</option>
-            <option>Gray / White</option>
-            <option>Bald / Shaved</option>
+            <option value="Negro">Negro</option>
+            <option value="Castaño">Castaño</option>
+            <option value="Rubio">Rubio</option>
+            <option value="Pelirrojo">Pelirrojo</option>
+            <option value="Canoso / Blanco">Canoso / Blanco</option>
+            <option value="Calvo / Rapado">Calvo / Rapado</option>
           </select>
         </div>
         <div>
           <label>Ojos</label>
           <select id="apb-sosp-ojos">
             <option value="">-</option>
-            <option>Brown</option>
-            <option>Blue</option>
-            <option>Green</option>
-            <option>Hazel</option>
-            <option>Black</option>
+            <option value="Castaños / Marrones">Castaños / Marrones</option>
+            <option value="Azules">Azules</option>
+            <option value="Verdes">Verdes</option>
+            <option value="Miel / Avellana">Miel / Avellana</option>
+            <option value="Negros">Negros</option>
           </select>
         </div>
         <div>
           <label>Tez</label>
           <select id="apb-sosp-tez">
             <option value="">-</option>
-            <option>Light / Pale</option>
-            <option>Medium / Tanned</option>
-            <option>Dark</option>
+            <option value="Clara / Pálida">Clara / Pálida</option>
+            <option value="Media / Bronceada">Media / Bronceada</option>
+            <option value="Oscura">Oscura</option>
           </select>
         </div>
       </div>
       <label>Vestimenta</label><textarea id="apb-sosp-vestimenta"></textarea>
-      <label>Marcas distintivas</label><textarea id="apb-sosp-marcas"></textarea>
+      <label>Marcas distintivas (Tatuajes, cicatrices, etc.)</label><textarea id="apb-sosp-marcas"></textarea>
     </div>
 
     <div class="section">
@@ -687,7 +842,7 @@
       <div class="row3">
         <div><label>Marca y modelo</label><input type="text" id="apb-veh-modelo"></div>
         <div><label>Color</label><input type="text" id="apb-veh-color"></div>
-        <div><label>Placa</label><input type="text" id="apb-veh-placa"></div>
+        <div><label>Placa / Matrícula</label><input type="text" id="apb-veh-placa"></div>
       </div>
       <label>Detalles adicionales</label><input type="text" id="apb-veh-detalles">
     </div>
@@ -700,9 +855,10 @@
         <option value="">Seleccionar nivel</option>
         <option>ARMED AND DANGEROUS</option>
         <option>USE CAUTION</option>
+        <option>MENTAL HEALTH CRISIS</option>
         <option>FLIGHT RISK</option>
-        <option>APPROACH WITH EXTREME CAUTION</option>
-        <option>MENTALLY UNSTABLE</option>
+        <option>GANG AFFILIATED</option>
+        <option>NONE SPECIFIED</option>
       </select>
       <label>Detalles de precaución</label>
       <textarea id="apb-precaucion-detalles"></textarea>
@@ -714,17 +870,21 @@
       <label>Ubicación</label><input type="text" id="apb-ubicacion">
       <div class="row2">
         <div>
-          <label>Dirección / Rumbo</label>
+          <label>Rumbo / Dirección de huida</label>
           <select id="apb-direccion">
             <option value="">-</option>
-            <option>Northbound</option>
-            <option>Southbound</option>
-            <option>Eastbound</option>
-            <option>Westbound</option>
-            <option>Stationary / On Foot</option>
+            <option>Norte</option>
+            <option>Sur</option>
+            <option>Este</option>
+            <option>Oeste</option>
+            <option>Noreste</option>
+            <option>Noroeste</option>
+            <option>Sureste</option>
+            <option>Suroeste</option>
+            <option>Desconocida</option>
           </select>
         </div>
-        <div><label>Fecha/Hora avistamiento</label><input type="text" id="apb-avistamiento"></div>
+        <div><label>Fecha / Hora del avistamiento</label><input type="text" id="apb-avistamiento"></div>
       </div>
     </div>
 
@@ -741,6 +901,7 @@
     </div>
 
     <div class="btn-generar-wrap">
+      <button class="btn-copiar btn-danger" onclick="limpiarBorrador('v-apb')" style="margin-top:24px;">Limpiar borrador</button>
       <button class="btn-generar" id="apb-generar-btn" onclick="generarAPB()">Generar Imagen y Guardar</button>
     </div>
 
@@ -752,7 +913,6 @@
       <div style="text-align: right;">
         <button class="btn-copiar" onclick="copiarImagenAPB()">Copiar imagen</button>
         <button class="btn-copiar" onclick="descargarImagenAPB()">Descargar imagen</button>
-        <span class="copiado" id="copiadoAPB"></span>
       </div>
     </div>
   </div>
@@ -762,68 +922,182 @@
 <!-- PLANTILLA INVISIBLE DE APB EN CANVAS -->
 <div class="apb-doc" id="apb-preview">
   <div class="apb-doc-header">
-    <div class="apb-doc-title">ALL POINTS BULLETIN</div>
-    <div class="apb-doc-dept">LOS SANTOS SHERIFF'S DEPARTMENT</div>
+    <div class="apb-doc-title">BOLETÍN DE BÚSQUEDA (APB)</div>
+    <div class="apb-doc-dept">DEPARTAMENTO DEL SHERIFF DE LOS SANTOS</div>
     <div class="apb-doc-division" id="apbp-division-tag">—</div>
   </div>
   <div class="apb-doc-meta">
-    <div><span class="k">DR#:</span> <span id="apbp-dr">—</span> &nbsp;&nbsp; <span class="k">DATE:</span> <span id="apbp-fecha">—</span></div>
-    <div><span class="k">APB TYPE:</span> <span id="apbp-tipo">—</span></div>
-    <div><span class="k">ISSUING OFFICER:</span> <span id="apbp-oficial">—</span></div>
-    <div><span class="k">DIVISION:</span> <span id="apbp-division">—</span></div>
+    <div><span class="k">Nº REPORTE (DR#):</span> <span id="apbp-dr">—</span> &nbsp;&nbsp; <span class="k">FECHA:</span> <span id="apbp-fecha">—</span></div>
+    <div><span class="k">TIPO DE APB:</span> <span id="apbp-tipo">—</span></div>
+    <div><span class="k">OFICIAL EMISOR:</span> <span id="apbp-oficial">—</span></div>
+    <div><span class="k">DIVISIÓN:</span> <span id="apbp-division">—</span></div>
   </div>
   <div class="apb-doc-section">
-    <hr><div class="apb-doc-h">INCIDENT SYNOPSIS</div><div class="apb-doc-p" id="apbp-sintesis">—</div>
+    <hr><div class="apb-doc-h">SÍNTESIS DEL INCIDENTE</div><div class="apb-doc-p" id="apbp-sintesis">—</div>
   </div>
   <div class="apb-doc-section">
-    <hr><div class="apb-doc-h">SUSPECT DESCRIPTION</div>
-    <div class="apb-doc-row"><div class="data-item"><span class="k">Name / Alias:</span> <span id="apbp-nombre">—</span></div></div>
+    <hr><div class="apb-doc-h">DESCRIPCIÓN DEL SOSPECHOSO</div>
+    <div class="apb-doc-row"><div class="data-item"><span class="k">Nombre / Alias:</span> <span id="apbp-nombre">—</span></div></div>
     <div class="apb-doc-row">
-        <div class="data-item"><span class="k">Sex:</span> <span id="apbp-sexo">—</span></div>
-        <div class="data-item"><span class="k">Race:</span> <span id="apbp-raza">—</span></div>
-        <div class="data-item"><span class="k">Age:</span> <span id="apbp-edad">—</span></div>
+        <div class="data-item"><span class="k">Sexo:</span> <span id="apbp-sexo">—</span></div>
+        <div class="data-item"><span class="k">Raza / Etnia:</span> <span id="apbp-raza">—</span></div>
+        <div class="data-item"><span class="k">Edad:</span> <span id="apbp-edad">—</span></div>
     </div>
     <div class="apb-doc-row">
-        <div class="data-item"><span class="k">Height:</span> <span id="apbp-estatura">—</span></div>
-        <div class="data-item"><span class="k">Weight:</span> <span id="apbp-peso">—</span></div>
-        <div class="data-item"><span class="k">Build:</span> <span id="apbp-complexion">—</span></div>
+        <div class="data-item"><span class="k">Estatura:</span> <span id="apbp-estatura">—</span></div>
+        <div class="data-item"><span class="k">Peso:</span> <span id="apbp-peso">—</span></div>
+        <div class="data-item"><span class="k">Complexión:</span> <span id="apbp-complexion">—</span></div>
     </div>
     <div class="apb-doc-row">
-        <div class="data-item"><span class="k">Hair:</span> <span id="apbp-cabello">—</span></div>
-        <div class="data-item"><span class="k">Eyes:</span> <span id="apbp-ojos">—</span></div>
-        <div class="data-item"><span class="k">Complexion:</span> <span id="apbp-tez">—</span></div>
+        <div class="data-item"><span class="k">Cabello:</span> <span id="apbp-cabello">—</span></div>
+        <div class="data-item"><span class="k">Ojos:</span> <span id="apbp-ojos">—</span></div>
+        <div class="data-item"><span class="k">Tez:</span> <span id="apbp-tez">—</span></div>
     </div>
-    <div class="apb-doc-row"><div class="data-item"><span class="k">Clothing:</span> <span id="apbp-vestimenta">—</span></div></div>
-    <div class="apb-doc-row"><div class="data-item"><span class="k">Marks:</span> <span id="apbp-marcas">—</span></div></div>
+    <div class="apb-doc-row"><div class="data-item"><span class="k">Vestimenta:</span> <span id="apbp-vestimenta">—</span></div></div>
+    <div class="apb-doc-row"><div class="data-item"><span class="k">Marcas distintivas:</span> <span id="apbp-marcas">—</span></div></div>
   </div>
   <div class="apb-doc-section">
-    <hr><div class="apb-doc-h">VEHICLE DESCRIPTION</div>
-    <div class="apb-doc-row"><div class="data-item"><span class="k">Make / Model:</span> <span id="apbp-veh-modelo">—</span></div></div>
+    <hr><div class="apb-doc-h">DESCRIPCIÓN DEL VEHÍCULO</div>
+    <div class="apb-doc-row"><div class="data-item"><span class="k">Marca / Modelo:</span> <span id="apbp-veh-modelo">—</span></div></div>
     <div class="apb-doc-row">
         <div class="data-item"><span class="k">Color:</span> <span id="apbp-veh-color">—</span></div>
-        <div class="data-item"><span class="k">Plate:</span> <span id="apbp-veh-placa">—</span></div>
+        <div class="data-item"><span class="k">Matrícula:</span> <span id="apbp-veh-placa">—</span></div>
     </div>
-    <div class="apb-doc-row" id="apbp-veh-detalles-row"><div class="data-item"><span class="k">Details:</span> <span id="apbp-veh-detalles">—</span></div></div>
+    <div class="apb-doc-row" id="apbp-veh-detalles-row"><div class="data-item"><span class="k">Detalles:</span> <span id="apbp-veh-detalles">—</span></div></div>
   </div>
   <div class="apb-doc-section">
-    <hr><div class="apb-doc-h" id="apbp-caution-h">CAUTION</div><div class="apb-doc-p" id="apbp-precaucion">—</div>
+    <hr><div class="apb-doc-h" id="apbp-caution-h">PRECAUCIÓN</div><div class="apb-doc-p" id="apbp-precaucion">—</div>
   </div>
   <div class="apb-doc-section">
-    <hr><div class="apb-doc-h">LAST KNOWN LOCATION</div>
-    <div class="apb-doc-row"><div class="data-item"><span class="k">Location:</span> <span id="apbp-ubicacion">—</span></div></div>
-    <div class="apb-doc-row"><div class="data-item"><span class="k">Direction:</span> <span id="apbp-direccion">—</span></div></div>
-    <div class="apb-doc-row"><div class="data-item"><span class="k">Date/Time:</span> <span id="apbp-avistamiento">—</span></div></div>
+    <hr><div class="apb-doc-h">ÚLTIMA UBICACIÓN CONOCIDA</div>
+    <div class="apb-doc-row"><div class="data-item"><span class="k">Ubicación:</span> <span id="apbp-ubicacion">—</span></div></div>
+    <div class="apb-doc-row"><div class="data-item"><span class="k">Rumbo:</span> <span id="apbp-direccion">—</span></div></div>
+    <div class="apb-doc-row"><div class="data-item"><span class="k">Fecha / Hora:</span> <span id="apbp-avistamiento">—</span></div></div>
   </div>
   <div class="apb-doc-section" id="apbp-info-section">
-    <hr><div class="apb-doc-h">ADDITIONAL INFO</div><div class="apb-doc-p" id="apbp-info">—</div>
+    <hr><div class="apb-doc-h">INFORMACIÓN ADICIONAL</div><div class="apb-doc-p" id="apbp-info">—</div>
   </div>
   <div class="apb-doc-section" id="apbp-contacto-section">
-    <hr><div class="apb-doc-h">CONTACT</div><div class="apb-doc-p" id="apbp-contacto">—</div>
+    <hr><div class="apb-doc-h">CONTACTO E INSTRUCCIONES</div><div class="apb-doc-p" id="apbp-contacto">—</div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+/* ================= SISTEMA GLOBAL DE NOTIFICACIONES ================= */
+let toastTimeout;
+
+function mostrarNotificacion(mensaje) {
+  const toast = document.getElementById('toastNotification');
+  const now = new Date();
+  
+  const dia = String(now.getDate()).padStart(2, '0');
+  const mes = String(now.getMonth() + 1).padStart(2, '0');
+  const anio = now.getFullYear();
+  const horas = String(now.getHours()).padStart(2, '0');
+  const minutos = String(now.getMinutes()).padStart(2, '0');
+  
+  const fechaFormateada = `${dia}/${mes}/${anio} ${horas}:${minutos}`;
+  toast.textContent = `${fechaFormateada} — ${mensaje}`;
+  
+  toast.classList.add('show');
+  
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+/* ================= MODAL PERSONALIZADO CENTRADO ================= */
+let callbackModalConfirm = null;
+
+function solicitarConfirmacion(mensaje, accionConfirmar, titulo = 'Pendiente de confirmación.') {
+  document.getElementById('modalTitle').textContent = titulo;
+  document.getElementById('modalMsg').textContent = mensaje;
+  callbackModalConfirm = accionConfirmar;
+  document.getElementById('customModal').classList.add('active');
+}
+
+function cerrarModalConfirmacion(confirmado) {
+  document.getElementById('customModal').classList.remove('active');
+  if (confirmado && typeof callbackModalConfirm === 'function') {
+    callbackModalConfirm();
+  }
+  callbackModalConfirm = null;
+}
+
+/* ================= AUTOGUARDADO EN TIEMPO REAL (BORRADORES) ================= */
+const DRAFT_KEY = 'lssd_drafts';
+
+function guardarBorradores(e) {
+  const data = {};
+  const inputs = document.querySelectorAll('input[type="text"], textarea, select');
+  inputs.forEach(el => {
+    if (el.id) data[el.id] = el.value;
+  });
+
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(el => {
+    if (el.id) data[el.id] = el.checked;
+  });
+
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+
+  if (e && e.target) {
+    const activeView = e.target.closest('.view');
+    if (activeView) {
+      const titleEl = activeView.querySelector('[data-generator-name]');
+      if (titleEl) {
+        const nombreGenerador = titleEl.getAttribute('data-generator-name');
+        mostrarNotificacion(`Borrador actualizado para "${nombreGenerador}"`);
+      }
+    }
+  }
+}
+
+function cargarBorradores() {
+  const saved = localStorage.getItem(DRAFT_KEY);
+  if (!saved) return;
+  const data = JSON.parse(saved);
+
+  Object.keys(data).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (el.type === 'checkbox') {
+        el.checked = data[id];
+      } else {
+        el.value = data[id];
+      }
+    }
+  });
+}
+
+function limpiarBorrador(viewId) {
+  solicitarConfirmacion('¿Quieres limpiar todos los campos introducidos en este formulario?', () => {
+    const view = document.getElementById(viewId);
+    if (!view) return;
+
+    const inputs = view.querySelectorAll('input[type="text"], textarea, select');
+    inputs.forEach(el => { el.value = ''; });
+
+    const checkboxes = view.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(el => { el.checked = false; });
+
+    guardarBorradores();
+    
+    const titleEl = view.querySelector('[data-generator-name]');
+    const nombreGenerador = titleEl ? titleEl.getAttribute('data-generator-name') : 'formulario';
+    mostrarNotificacion(`Borrador limpiado para "${nombreGenerador}"`);
+  });
+}
+
+// Escuchadores para guardar cambios al instante
+document.addEventListener('DOMContentLoaded', () => {
+  cargarBorradores();
+  document.addEventListener('input', guardarBorradores);
+  document.addEventListener('change', guardarBorradores);
+});
+
 /* ================= CONTROL DE SIDEBAR ================= */
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
@@ -856,13 +1130,11 @@ function mostrarVista(id, btn) {
 }
 
 /* ================= COPIADO GENERAL ================= */
-function copiar(taId, spanId) {
+function copiar(taId) {
   const ta = document.getElementById(taId);
   ta.select();
   navigator.clipboard.writeText(ta.value).then(() => {
-    const span = document.getElementById(spanId);
-    span.textContent = '¡Copiado!';
-    setTimeout(() => span.textContent = '', 2000);
+    mostrarNotificacion('Texto copiado al portapapeles');
   });
 }
 
@@ -910,7 +1182,9 @@ function cargarHistorial() {
 
 function copiarTextoHistorial(id) {
   const txt = document.getElementById(`hist-data-${id}`).value;
-  navigator.clipboard.writeText(txt).then(() => alert('¡Texto copiado al portapapeles!'));
+  navigator.clipboard.writeText(txt).then(() => {
+    mostrarNotificacion('BBCode copiado desde el historial');
+  });
 }
 
 function descargarImgHistorial(dataUrl) {
@@ -918,23 +1192,25 @@ function descargarImgHistorial(dataUrl) {
   link.download = 'apb_guardado.png';
   link.href = dataUrl;
   link.click();
+  mostrarNotificacion('Descargando imagen guardada');
 }
 
-/* === CONFIRMACIÓN AL ELIMINAR UN REGISTRO INDIVIDUAL === */
 function eliminarHistorial(id) {
-  if (confirm('¿Estás seguro de que quieres eliminar este archivo del historial?')) {
+  solicitarConfirmacion('¿Estás seguro de que quieres eliminar este archivo del historial?', () => {
     let historial = JSON.parse(localStorage.getItem('lssd_papeleos') || '[]');
     historial = historial.filter(item => item.id !== id);
     localStorage.setItem('lssd_papeleos', JSON.stringify(historial));
     cargarHistorial();
-  }
+    mostrarNotificacion('Elemento eliminado del historial');
+  });
 }
 
 function limpiarTodoElHistorial() {
-  if (confirm('¿Estás seguro de que quieres borrar todos los papeleos guardados?')) {
+  solicitarConfirmacion('¿Estás seguro de que quieres borrar todos los papeleos guardados?', () => {
     localStorage.removeItem('lssd_papeleos');
     cargarHistorial();
-  }
+    mostrarNotificacion('Archivo local vaciado');
+  });
 }
 
 /* ================= LÓGICA GENERADORES ================= */
@@ -974,6 +1250,7 @@ ${v('resumen-detallado')}
 
   document.getElementById('resultado1').value = bbcode;
   guardarEnHistorial('UOF Inicial', v('fechahora-incidente') || 'Sin fecha', bbcode);
+  mostrarNotificacion('Informe Inicial generado y guardado en archivo');
 }
 
 function generar2() {
@@ -996,6 +1273,7 @@ ${v('narrativa-completa')}
 
   document.getElementById('resultado2').value = bbcode;
   guardarEnHistorial('UOF Comp.', v('nombre-completo') || 'Sin Nombre', bbcode);
+  mostrarNotificacion('Informe Complementario generado y guardado en archivo');
 }
 
 let apbCanvas = null;
@@ -1054,6 +1332,7 @@ function generarAPB() {
     btn.textContent = 'Generar Imagen y Guardar';
     
     guardarEnHistorial('APB Image', v('apb-dr') || 'Boletín APB', imgData, true);
+    mostrarNotificacion('Boletín APB generado y guardado en archivo');
   });
 }
 
@@ -1061,8 +1340,7 @@ function copiarImagenAPB() {
   if (!apbCanvas) return;
   apbCanvas.toBlob(async (blob) => {
     await navigator.clipboard.write([ new ClipboardItem({ 'image/png': blob }) ]);
-    document.getElementById('copiadoAPB').textContent = '¡Imagen copiada!';
-    setTimeout(() => document.getElementById('copiadoAPB').textContent = '', 2000);
+    mostrarNotificacion('Imagen del APB copiada al portapapeles');
   });
 }
 
@@ -1072,6 +1350,7 @@ function descargarImagenAPB() {
   link.download = 'apb.png';
   link.href = apbCanvas.toDataURL('image/png');
   link.click();
+  mostrarNotificacion('Descargando imagen del APB');
 }
 </script>
 
