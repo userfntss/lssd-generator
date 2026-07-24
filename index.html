@@ -90,6 +90,7 @@
     font-size: 13.5px; cursor: pointer; margin-bottom: 2px;
     transition: background .12s, color .12s;
     font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
   }
   .nav-item:hover { background: var(--bg-elev); color: var(--text); }
   .nav-item.active {
@@ -147,6 +148,7 @@
     font-weight: 600;
     white-space: nowrap;
     transition: background 0.15s, color 0.15s;
+    text-decoration: none;
   }
   .btn-back-home:hover {
     background: var(--bg-card);
@@ -274,6 +276,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    text-decoration: none;
   }
   .dash-card:hover {
     transform: translateY(-3px);
@@ -414,29 +417,29 @@
   </div>
 
   <div class="nav-group">
-    <button class="nav-item active" data-view="v-home" onclick="mostrarVista('v-home', this)">
+    <a href="./" class="nav-item active" data-path="" onclick="navegarRuta(event, '')">
        Inicio
-    </button>
-    <button class="nav-item" data-view="v-history" onclick="mostrarVista('v-history', this)">
+    </a>
+    <a href="./history" class="nav-item" data-path="history" onclick="navegarRuta(event, 'history')">
        Archivo Local Guardado
-    </button>
+    </a>
   </div>
 
   <div class="nav-group">
     <div class="nav-group-label">Uso de la Fuerza</div>
-    <button class="nav-item" data-view="v-uof1" onclick="mostrarVista('v-uof1', this)">
+    <a href="./uof-initial" class="nav-item" data-path="uof-initial" onclick="navegarRuta(event, 'uof-initial')">
        Informe Inicial
-    </button>
-    <button class="nav-item" data-view="v-uof2" onclick="mostrarVista('v-uof2', this)">
+    </a>
+    <a href="./uof-complementary" class="nav-item" data-path="uof-complementary" onclick="navegarRuta(event, 'uof-complementary')">
        Informe Complementario
-    </button>
+    </a>
   </div>
 
   <div class="nav-group">
     <div class="nav-group-label">Generadores Varios</div>
-    <button class="nav-item" data-view="v-apb" onclick="mostrarVista('v-apb', this)">
+    <a href="./all-points-bulletin" class="nav-item" data-path="all-points-bulletin" onclick="navegarRuta(event, 'all-points-bulletin')">
        Boletín de Búsqueda (APB)
-    </button>
+    </a>
   </div>
 </div>
 
@@ -461,37 +464,37 @@
     </div>
 
     <div class="dashboard-grid">
-      <div class="dash-card" onclick="mostrarVista('v-uof1')">
+      <a href="./uof-initial" class="dash-card" onclick="navegarRuta(event, 'uof-initial')">
         <div>
           <h3>Informe Inicial UOF</h3>
           <p>Reporte del Incident Commander para Uso Categórico de la Fuerza (DIS, ICD, LERI, etc.).</p>
         </div>
         <div class="btn-acc">Abrir generador →</div>
-      </div>
+      </a>
 
-      <div class="dash-card" onclick="mostrarVista('v-uof2')">
+      <a href="./uof-complementary" class="dash-card" onclick="navegarRuta(event, 'uof-complementary')">
         <div>
           <h3>Informe Complementario UOF</h3>
           <p>Testimonio oficial del ayudante directamente involucrado en la escena de fuerza.</p>
         </div>
         <div class="btn-acc">Abrir generador →</div>
-      </div>
+      </a>
 
-      <div class="dash-card" onclick="mostrarVista('v-apb')">
+      <a href="./all-points-bulletin" class="dash-card" onclick="navegarRuta(event, 'all-points-bulletin')">
         <div>
           <h3>Boletín de Búsqueda (APB)</h3>
           <p>Generador visual en formato imagen para emitir boletines de sospechosos o vehículos.</p>
         </div>
         <div class="btn-acc">Abrir generador →</div>
-      </div>
+      </a>
 
-      <div class="dash-card" onclick="mostrarVista('v-history')">
+      <a href="./history" class="dash-card" onclick="navegarRuta(event, 'history')">
         <div>
           <h3> Archivo Local</h3>
           <p>Consulta el historial de papeleos generados que se han quedado guardados en este equipo.</p>
         </div>
         <div class="btn-acc" style="background: var(--accent);">Ver archivo →</div>
-      </div>
+      </a>
     </div>
   </div>
 
@@ -503,7 +506,7 @@
           <p class="page-title">Archivo Local de Papeleos</p>
           <p class="page-subtitle">Todos los papeleos que generas se guardan automáticamente en tu navegador.</p>
         </div>
-        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+        <a href="./" class="btn-back-home" onclick="navegarRuta(event, '')"> Volver al inicio</a>
       </div>
     </div>
 
@@ -524,7 +527,7 @@
           <p class="page-title" data-generator-name="Informe Inicial — Uso Categórico de la Fuerza">Informe Inicial — Uso Categórico de la Fuerza</p>
           <p class="page-subtitle">Reporte del Incident Commander. Rellena los campos y genera el BBCode.</p>
         </div>
-        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+        <a href="./" class="btn-back-home" onclick="navegarRuta(event, '')"> Volver al inicio</a>
       </div>
     </div>
 
@@ -548,11 +551,11 @@
 
       <label>Tipo de UOF</label>
       <div class="checkboxes">
-        <label><input type="checkbox" class="cb1" id="cb1-1" value="DIS - Deputy-lnvolved Shooting"> DIS - Disparo Involucrando a un Ayudante</label>
-        <label><input type="checkbox" class="cb1" id="cb1-2" value="DIS-D - DIS Resulting in Death"> DIS-D - Disparo Involucrando a un Ayudante con Resultado de Muerte</label>
-        <label><input type="checkbox" class="cb1" id="cb1-3" value="ICD - In-Custody Death"> ICD - Muerte Bajo Custodia</label>
-        <label><input type="checkbox" class="cb1" id="cb1-4" value="LERI - Law Enforcement Related Injury"> LERI - Lesión Relacionada con Aplicación de la Ley</label>
-        <label><input type="checkbox" class="cb1" id="cb1-5" value="AD - Accidental Discharge"> AD - Descarga Accidental</label>
+        <label><input type="checkbox" class="cb1" id="cb1-1" value="DIS - Deputy-lnvolved Shooting"> DIS - Deputy-lnvolved Shooting</label>
+        <label><input type="checkbox" class="cb1" id="cb1-2" value="DIS-D - DIS Resulting in Death"> DIS-D - DIS Resulting in Death</label>
+        <label><input type="checkbox" class="cb1" id="cb1-3" value="ICD - In-Custody Death"> ICD - In-Custody Death</label>
+        <label><input type="checkbox" class="cb1" id="cb1-4" value="LERI - Law Enforcement Related Injury"> LERI - Law Enforcement Related Injury</label>
+        <label><input type="checkbox" class="cb1" id="cb1-5" value="AD - Accidental Discharge"> AD - Accidental Discharge</label>
       </div>
     </div>
 
@@ -602,7 +605,7 @@
           <p class="page-title" data-generator-name="Informe Complementario — Ayudante Involucrado">Informe Complementario — Ayudante Involucrado</p>
           <p class="page-subtitle">Testimonio del ayudante involucrado directamente en el UOF.</p>
         </div>
-        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+        <a href="./" class="btn-back-home" onclick="navegarRuta(event, '')"> Volver al inicio</a>
       </div>
     </div>
 
@@ -669,7 +672,7 @@
           <p class="page-title" data-generator-name="Boletín de Búsqueda (APB)">Boletín de Búsqueda (APB)</p>
           <p class="page-subtitle">Generar un APB visual para localizar personas o vehículos de interés.</p>
         </div>
-        <button class="btn-back-home" onclick="mostrarVista('v-home')"> Volver al inicio</button>
+        <a href="./" class="btn-back-home" onclick="navegarRuta(event, '')"> Volver al inicio</a>
       </div>
     </div>
 
@@ -984,6 +987,46 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+/* ================= SISTEMA DE RUTAS Y MAPEO DE VISTAS ================= */
+const ROUTES = {
+  '': 'v-home',
+  'history': 'v-history',
+  'uof-initial': 'v-uof1',
+  'uof-complementary': 'v-uof2',
+  'all-points-bulletin': 'v-apb'
+};
+
+function obtenerRutaActual() {
+  const path = window.location.pathname;
+  const segments = path.split('/').filter(Boolean);
+  const lastSegment = segments.length > 0 ? segments[segments.length - 1] : '';
+  return ROUTES.hasOwnProperty(lastSegment) ? lastSegment : (ROUTES.hasOwnProperty(segments[0]) ? segments[0] : '');
+}
+
+function navegarRuta(event, path) {
+  if (event) event.preventDefault();
+  const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+  const newUrl = path ? `${basePath}/${path}` : `${basePath}/`;
+  window.history.pushState({ path: path }, '', newUrl);
+  cargarVistaPorRuta(path);
+}
+
+function cargarVistaPorRuta(path) {
+  const viewId = ROUTES[path] || 'v-home';
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === viewId));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.getAttribute('data-path') === path));
+  cerrarSidebar();
+  window.scrollTo(0,0);
+
+  if (viewId === 'v-history') {
+    cargarHistorial();
+  }
+}
+
+window.addEventListener('popstate', () => {
+  cargarVistaPorRuta(obtenerRutaActual());
+});
+
 /* ================= SISTEMA GLOBAL DE NOTIFICACIONES ================= */
 let toastTimeout;
 
@@ -1011,7 +1054,7 @@ function mostrarNotificacion(mensaje) {
 /* ================= MODAL PERSONALIZADO CENTRADO ================= */
 let callbackModalConfirm = null;
 
-function solicitarConfirmacion(mensaje, accionConfirmar, titulo = 'Pendiente de confirmación.') {
+function solicitarConfirmacion(mensaje, accionConfirmar, titulo = 'Esta página dice') {
   document.getElementById('modalTitle').textContent = titulo;
   document.getElementById('modalMsg').textContent = mensaje;
   callbackModalConfirm = accionConfirmar;
@@ -1091,9 +1134,9 @@ function limpiarBorrador(viewId) {
   });
 }
 
-// Escuchadores para guardar cambios al instante
 document.addEventListener('DOMContentLoaded', () => {
   cargarBorradores();
+  cargarVistaPorRuta(obtenerRutaActual());
   document.addEventListener('input', guardarBorradores);
   document.addEventListener('change', guardarBorradores);
 });
@@ -1109,24 +1152,6 @@ function toggleSidebar() {
 function cerrarSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('active');
-}
-
-/* ================= NAVEGACIÓN ================= */
-function mostrarVista(id, btn) {
-  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === id));
-  
-  if(btn) {
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b === btn));
-  } else {
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.getAttribute('data-view') === id));
-  }
-  
-  cerrarSidebar();
-  window.scrollTo(0,0);
-
-  if(id === 'v-history') {
-    cargarHistorial();
-  }
 }
 
 /* ================= COPIADO GENERAL ================= */
@@ -1216,24 +1241,33 @@ function limpiarTodoElHistorial() {
 /* ================= LÓGICA GENERADORES ================= */
 function generar1() {
   const v = id => document.getElementById(id).value || '';
+  
+  // Procesamiento de checkboxes del Tipo de UOF
   let tipoUOF = '';
   document.querySelectorAll('.cb1').forEach(cb => {
-    if(cb.checked) tipoUOF += `[cbc][color=#000000]${cb.value}[/color]\n`;
+    if(cb.checked) {
+      tipoUOF += `[cb=checked][color=#000000]${cb.value}[/color]\n`;
+    } else {
+      tipoUOF += `[cb][color=#000000]${cb.value}[/color]\n`;
+    }
   });
 
+  // Construcción de la plantilla completa de Uso Categórico de la Fuerza
   const bbcode = `[divbox=white]
 [center][img]https://i.imgur.com/8vBOver.png[/img][/center]
 [hr]
+
 [center][b][size=135][font=Arial]INFORME DE USO CATEGÓRICO DE LA FUERZA[/font][/size][/b][/center]
 [color=#FFFFFF]SPACER[/color]
 [divbox2=#445c2a][size=110][b][color=#FFFFFF][font=Arial]1. INFORMACIÓN GENERAL[/font][/color][/b][/size][/divbox2]
 [divbox2=white]
 [font=Arial][b]Empleado reportante:[/b] ${v('empleado-reportante')}
 [b]Número de placa / serial:[/b] ${v('serial')}
-[b]Antigüedad:[/b] ${v('antiguedad')}
-[b]Unidad:[/b] ${v('estacion-unidad')}
-[b]Fecha y hora:[/b] ${v('fechahora-incidente')}
-[b]Lugar:[/b] ${v('lugar')}
+[b]Antiguedad en el departamento:[/b] ${v('antiguedad')}
+[b]Unidad asignada:[/b] ${v('estacion-unidad')}
+[b]Antiguedad en la unidad asignada:[/b] ${v('antiguedad-estacion-unidad')}
+[b]Fecha y hora del incidente:[/b] ${v('fechahora-incidente')}
+[b]Lugar del incidente:[/b] ${v('lugar')}
 [b]Tipo de UOF:[/b] 
 ${tipoUOF.trim()}
 [/font]
@@ -1242,10 +1276,43 @@ ${tipoUOF.trim()}
 [divbox2=#445c2a][size=110][b][color=#FFFFFF][font=Arial]2. INFORMACIÓN DEL INCIDENTE[/font][/color][/b][/size][/divbox2]
 [divbox2=white]
 [font=Arial][b]Incident Commander:[/b] ${v('incidentcommander')}
-[b]Resumen detallado:[/b]
+[b]Ayudante(s) involucrado(s) directamente en el UOF:[/b] ${v('ayudantes-involucrados')}
+[b]Ayudante(s) presentes:[/b] ${v('ayudantes-presentes')}
+[b]Resumen detallado del incidente:[/b]
 ${v('resumen-detallado')}
 [/font]
 [/divbox2]
+[color=#FFFFFF]SPACER[/color]
+[divbox2=#445c2a][size=110][b][color=#FFFFFF][font=Arial]3. EVIDENCIAS[/font][/color][/b][/size][/divbox2]
+[divbox2=white]
+[font=Arial][b]Armas incautadas:[/b] ${v('armas-incautadas')}
+[b]Ingreso a cadena de custodia:[/b] ${v('ingreso-cadenacustodia')}
+[b]Informe de arresto (si aplica):[/b] ${v('informe-arresto')}
+[b]Pruebas recopiladas:[/b]
+[indent][u]Fotografías:[/u] Escena del hecho, evidencia material, lesiones...[/indent]
+[indent][u]Videos:[/u] Body Worn Camera, dashcam, cámaras privadas/públicas...[/indent]
+[indent][u]Declaraciones:[/u] Testigos civiles, ayudantes presentes e involucrados...[/indent]
+[indent][u]Otros:[/u] Pericias balísticas, ADN, grabaciones de radio, comunicaciones, etc...[/indent]
+[b]Adjuntos digitales:[/b]
+[spoiler=Evidencia visual y audiovisual]${v('evidencia-visual')}[/spoiler][/font]
+[/divbox2]
+[color=#FFFFFF]SPACER[/color]
+[divbox2=#445c2a][size=110][b][color=#FFFFFF][font=Arial]4. ACCIONES POSTERIORES[/font][/color][/b][/size][/divbox2]
+[divbox2=white]
+[font=Arial]Detalle notificación a IAB, preservación de la escena, asistencia médica, y cualquier
+observación adicional relevante...[/font]
+[/divbox2]
+[color=#FFFFFF]SPACER[/color]
+[divbox2=#445c2a][size=110][b][color=#FFFFFF][font=Arial]5. INFORMACIÓN DE SECCIÓN[/font][/color][/b][/size][/divbox2]
+[divbox2=white]
+[font=Arial]Esta sección está destinada al registro y análisis de reportes oficiales vinculados a incidentes en los que se haya utilizado fuerza categórica.
+
+Los reportes serán evaluados por la [i]Shooting Response Team (SRT)[/i], con el propósito de determinar si se observaron los protocolos, procedimientos y estándares del Departamento.
+
+La unidad que haya iniciado el incidente deberá presentar el reporte inicial ([b]Incident Commander[/b]), y los ayudantes involucrados directamente en el uso de la fuerza deberán responder en el mismo hilo con su informe complementario, conforme a los lineamientos internos establecidos.[/font]
+[/divbox2]
+[color=#FFFFFF]SPACER[/color]
+[i][size=85][color=gray][font=Arial]Nota: El incumplimiento en la presentación o alteración de la información contenida en este documento podrá ser considerado una falta administrativa o violación a las políticas de integridad profesional de LSSD.[/font][/color][/size][/i]
 [/divbox]`;
 
   document.getElementById('resultado1').value = bbcode;
